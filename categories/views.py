@@ -1,6 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
+from rest_framework.status import HTTP_204_NO_CONTENT
 from .models import Category
 from .serializers import CategorySerializer
 
@@ -15,29 +16,32 @@ def categories(request):
     elif request.method == "POST":
         serializer = CategorySerializer(data=request.data)  # Data from User, Dato to Django
         if serializer.is_valid():
-            new_category = serializer.save()
+            new_category = serializer.save()  # def create 호출
             return Response(CategorySerializer(new_category).data)
         else:
             return Response(serializer.errors)
 
 
-@api_view(["GET", "PUT"])
+@api_view(["GET", "PUT", "DELETE"])
 def category(request, pk):
     try:
         category = Category.objects.get(pk=pk)
     except Category.DoesNotExist:
         raise NotFound
     if request.method == "GET":
-        serealizer = CategorySerializer(category)  # Django to JSON
-        return Response(serealizer.data)
+        serializer = CategorySerializer(category)  # Django to JSON
+        return Response(serializer.data)
     elif request.method == "PUT":
-        serealizer = CategorySerializer(
+        serializer = CategorySerializer(
             category,
             data=request.data,
             partial=True,
         )
-        if serealizer.is_valid():
-            updated_category = serealizer.save()
+        if serializer.is_valid():
+            updated_category = serializer.save()
             return Response(CategorySerializer(updated_category).data)
         else:
-            return Response(serealizer.errors)
+            return Response(serializer.errors)
+    elif request.method == "DELETE":
+        category.delete()
+        return Response(status=HTTP_204_NO_CONTENT)

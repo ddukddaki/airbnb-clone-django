@@ -16,6 +16,7 @@ class RoomAdmin(admin.ModelAdmin):
 
     list_display = (
         "name",
+        "pk",
         "price",
         "kind",
         "total_amenities",
@@ -43,6 +44,7 @@ class RoomAdmin(admin.ModelAdmin):
 class AmenityAdmin(admin.ModelAdmin):
     list_display = (
         "name",
+        "pk",
         "description",
         "created_at",
         "updated_at",

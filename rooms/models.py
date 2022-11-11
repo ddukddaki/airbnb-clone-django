@@ -51,7 +51,7 @@ class Room(CommonModel):
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        related_name="rooms",
+        related_name="rooms",  # room_set 대신 rooms 사용
     )
 
     def __str__(self):
@@ -63,7 +63,7 @@ class Room(CommonModel):
     def rating(room):
         count = room.reviews.count()
         if count == 0:
-            return "No Reviews"
+            return 0
         else:
             total_rating = 0
             for review in room.reviews.all().values("rating"):

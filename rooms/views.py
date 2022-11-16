@@ -90,6 +90,7 @@ class Rooms(APIView):
                     raise ParseError("Category Kind should be rooms.")
             except Category.DoesNotExist:
                 raise ParseError("Category Not Found.")
+            ##### from here
             try:
                 with transaction.atomic():
                     room = serializer.save(owner=request.user, category=category)

@@ -8,6 +8,8 @@ from rest_framework import status
 from .models import Experience, Perk
 from .serializers import ExperienceListSerializer, ExperienceDetailSerializer, PerkSerializer
 from categories.models import Category
+from bookings.models import Booking
+from bookings.serializer import PublicBookingSerializer, CreateExperienceBookingSerializer
 
 
 class Experiences(APIView):
@@ -137,3 +139,48 @@ class ExperiencePerks(APIView):
             many=True,
         )
         return Response(serializer.data)
+
+
+class ExperienceBookings(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get_object(self, pk):
+        try:
+            return Experience.objects.get(pk=pk)
+        except Experience.DoesNotExist:
+            raise NotFound
+
+    def get(self, request, pk):
+        experience = self.get_object(pk)
+        booking = Booking.objects.filter(
+            experience=experience,
+            kind=Booking.BookingKindChoices.EXPERIENCE,
+        )
+        serializer = PublicBookingSerializer(
+            booking,
+            many=True,
+        )
+        return Response(serializer.data)
+
+    def post(self, request, pk):
+        experience = self.get_object(pk)
+        serializer = CreateExperienceBookingSerializer(
+            experience,
+            data=request.data,
+        )
+        if serializer.is_valid():
+            booking = serializer.save(  # post는 정상적으로 진행되는데 실질직인 저장이 안됨 뭐지
+                experience=experience,
+                user=request.user,
+                kind=Booking.BookingKindChoices.EXPERIENCE,
+            )
+            serializer = CreateExperienceBookingSerializer(booking)
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors)
+
+
+# {
+#     "experience_time": "2022-11-30T18:00:00+09:00",
+#     "guests": 1
+# }

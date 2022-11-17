@@ -128,17 +128,19 @@ class RoomDetail(APIView):
         room = self.get_object(pk)
         if room.owner != request.user:  # 권한이 있는지
             raise PermissionDenied
+
         serializer = RoomDetailSerializer(
             room,
             data=request.data,
             partial=True,
         )
+
         if serializer.is_valid():
             category_pk = request.data.get("category")
             if category_pk:
                 try:
                     category = Category.objects.get(pk=category_pk)
-                    if category.kind != Room:
+                    if category.kind != Category.CategoryKindChoices.ROOMS:
                         raise ParseError("Category Kind should be rooms.")
                 except Category.DoesNotExist:
                     raise ParseError("Category Not Found.")
@@ -148,6 +150,7 @@ class RoomDetail(APIView):
                         updated_room = serializer.save(category=category)
                     else:
                         updated_room = serializer.save()
+
                     amenities = request.data.get("amenities")
                     if amenities:
                         # 기존의 Amenity들을 제거해주는 코드 필요
@@ -155,7 +158,10 @@ class RoomDetail(APIView):
                         for amenity_pk in amenities:
                             amenity = Amenity.objects.get(pk=amenity_pk)
                             updated_room.amenities.add(amenity)
-                    serializer = RoomDetailSerializer(updated_room)
+                    serializer = RoomDetailSerializer(
+                        updated_room,
+                        context={"request": request},
+                    )
                     return Response(serializer.data)
             except Exception:
                 raise ParseError("Amenity not found.")

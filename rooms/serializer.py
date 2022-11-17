@@ -48,13 +48,16 @@ class RoomListSerializer(ModelSerializer):
 
 class RoomDetailSerializer(ModelSerializer):
 
-    owner = TinyUserSerializer(read_only=True)
+    owner = TinyUserSerializer(
+        read_only=True,
+    )
     category = CategorySerializer(
         read_only=True,
     )
     rating = serializers.SerializerMethodField()
     is_owner = serializers.SerializerMethodField()
     is_liked = serializers.SerializerMethodField()
+
     photos = PhotoSerializer(
         many=True,
         read_only=True,

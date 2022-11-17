@@ -4,4 +4,5 @@ from . import views
 
 urlpatterns = [
     path("", views.Experiences.as_view()),
+    path("<int:pk>", views.ExperienceDetail.as_view()),
 ]

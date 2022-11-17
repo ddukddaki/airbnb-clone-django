@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import transaction
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
@@ -5,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.exceptions import ParseError, PermissionDenied, NotFound
 from rest_framework import status
 from .models import Experience, Perk
-from .serializers import ExperienceListSerializer, ExperienceDetailSerializer
+from .serializers import ExperienceListSerializer, ExperienceDetailSerializer, PerkSerializer
 from categories.models import Category
 
 
@@ -113,3 +114,26 @@ class ExperienceDetail(APIView):
             raise PermissionDenied
         experience.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class ExperiencePerks(APIView):
+    def get_object(self, pk):
+        try:
+            return Experience.objects.get(pk=pk)
+        except Experience.DoesNotExist:
+            raise NotFound
+
+    def get(self, request, pk):
+        try:
+            page = int(request.query_params.get("page", 1))  # page query의 값을 가져오고 디폴트는 1
+        except ValueError:
+            page = 1
+        page_size = settings.PAGE_SIZE
+        start = (page - 1) * page_size
+        end = start + page_size
+        experience = self.get_object(pk=pk)
+        serializer = PerkSerializer(
+            experience.perks.all()[start:end],
+            many=True,
+        )
+        return Response(serializer.data)

@@ -93,7 +93,6 @@ class ExperienceDetail(APIView):
                         updated_experience = serializer.save(category=category)
                     else:
                         updated_experience = serializer.save()
-                    print(updated_experience)
                     perks = request.data.get("perks")
                     if perks:
                         experience.perks.clear()
@@ -165,7 +164,6 @@ class ExperienceBookings(APIView):
     def post(self, request, pk):
         experience = self.get_object(pk)
         serializer = CreateExperienceBookingSerializer(
-            experience,
             data=request.data,
         )
         if serializer.is_valid():
@@ -180,7 +178,64 @@ class ExperienceBookings(APIView):
             return Response(serializer.errors)
 
 
-# {
-#     "experience_time": "2022-11-30T18:00:00+09:00",
-#     "guests": 1
-# }
+class ExperienceBookingsDetail(APIView):
+    def get_object(self, pk):
+        try:
+            return Experience.objects.get(pk=pk)
+        except Experience.DoesNotExist:
+            raise NotFound
+
+    def get(self, request, pk, booking_pk):
+        experience = self.get_object(pk)
+        try:
+            booking = Booking.objects.get(
+                experience=experience,
+                kind=Booking.BookingKindChoices.EXPERIENCE,
+                pk=booking_pk,
+            )
+        except Booking.DoesNotExist:
+            raise NotFound
+        serializer = PublicBookingSerializer(booking)
+        return Response(serializer.data)
+
+    def put(self, request, pk, booking_pk):
+
+        experience = self.get_object(pk)
+        if experience.host != request.user:
+            raise PermissionDenied
+
+        try:
+            booking = Booking.objects.get(
+                pk=booking_pk,
+                experience=experience,
+            )
+        except Booking.DoesNotExist:
+            raise NotFound
+
+        serializer = PublicBookingSerializer(
+            booking,
+            data=request.data,
+            partial=True,
+        )
+        if serializer.is_valid():
+            try:
+                with transaction.atomic():
+                    updated_booking = serializer.save()
+                    serializer = PublicBookingSerializer(
+                        updated_booking,
+                    )
+                    return Response(serializer.data)
+            except Exception:
+                raise ParseError("Check your booking again.")
+
+    def delete(self, request, pk, booking_pk):
+        experience = self.get_object(pk)
+        try:
+            booking = Booking.objects.get(
+                pk=booking_pk,
+                experience=experience,
+            )
+        except Booking.DoesNotExist:
+            raise NotFound
+        booking.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

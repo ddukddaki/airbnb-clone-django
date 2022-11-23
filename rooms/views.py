@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from django.db import transaction  # 코드조각들을 만들어서 그중 하나라도 실패하면 그 시점에 db에서 변경된 사항들을 모두 되돌려지게 할 수 있음
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound, NotAuthenticated, ParseError, PermissionDenied
-from rest_framework.status import HTTP_204_NO_CONTENT
+from rest_framework.status import HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST
 from rest_framework.permissions import (
     IsAuthenticatedOrReadOnly,
 )  # get 요청은 다 승낙, 만약 다른 요청이 있으면 오직 인증받은 사람들만 허용
@@ -29,7 +29,10 @@ class Amenities(APIView):
             amenity = serializer.save()
             return Response(AmenitySerializer(amenity).data)
         else:
-            return Response(serializer.errors)
+            return Response(
+                serializer.errors,
+                status=HTTP_400_BAD_REQUEST,
+            )
 
 
 class AmenityDetail(APIView):
@@ -57,7 +60,10 @@ class AmenityDetail(APIView):
             updated_amenity = serializer.save()
             return Response(AmenitySerializer(updated_amenity).data)
         else:
-            Response(serializer.errors)
+            return Response(
+                serializer.errors,
+                status=HTTP_400_BAD_REQUEST,
+            )
 
     def delete(self, request, pk):
         amenity = self.get_object(pk)
@@ -103,7 +109,10 @@ class Rooms(APIView):
             except Exception:
                 raise ParseError("Amenity not found.")
         else:
-            return Response(serializer.errors)
+            return Response(
+                serializer.errors,
+                status=HTTP_400_BAD_REQUEST,
+            )
 
 
 class RoomDetail(APIView):
@@ -166,7 +175,10 @@ class RoomDetail(APIView):
             except Exception:
                 raise ParseError("Amenity not found.")
         else:
-            return Response(serializer.errors)
+            return Response(
+                serializer.errors,
+                status=HTTP_400_BAD_REQUEST,
+            )
 
     def delete(self, request, pk):
         room = self.get_object(pk)
@@ -254,7 +266,10 @@ class RoomPhotos(APIView):
             serializer = PhotoSerializer(photo)
             return Response(serializer.data)
         else:
-            return Response(serializer.errors)
+            return Response(
+                serializer.errors,
+                status=HTTP_400_BAD_REQUEST,
+            )
 
 
 class RoomBookings(APIView):
@@ -295,4 +310,7 @@ class RoomBookings(APIView):
             serializer = PublicBookingSerializer(booking)
             return Response(serializer.data)
         else:
-            return Response(serializer.errors)
+            return Response(
+                serializer.errors,
+                status=HTTP_400_BAD_REQUEST,
+            )

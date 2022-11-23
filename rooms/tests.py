@@ -130,11 +130,15 @@ class TestAmenity(APITestCase):
         )
 
         # valid request
+
+        new_amenity_name = "New Amenity"
+        new_amenity_description = "New Amenity desc."
+
         response = self.client.put(
             "/api/v1/rooms/amenities/1",
             data={
-                "name": self.NAME,
-                "description": self.DESC,
+                "name": new_amenity_name,
+                "description": new_amenity_description,
             },
         )
         data = response.json()
@@ -145,11 +149,11 @@ class TestAmenity(APITestCase):
         )
         self.assertEqual(
             data["name"],
-            self.NAME,
+            new_amenity_name,
         )
         self.assertEqual(
             data["description"],
-            self.DESC,
+            new_amenity_description,
         )
 
     def test_delete_amenity(self):

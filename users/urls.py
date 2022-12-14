@@ -10,6 +10,8 @@ from .views import (
     PublicUserReviews,
     JWTLogIn,
     GithubLogIn,
+    KakaoLogIn,
+    NaverLogIn,
 )
 
 urlpatterns = [
@@ -21,6 +23,8 @@ urlpatterns = [
     path("token-login", obtain_auth_token),
     path("jwt-login", JWTLogIn.as_view()),
     path("github", GithubLogIn.as_view()),
+    path("kakao", KakaoLogIn.as_view()),
+    path("naver", NaverLogIn.as_view()),
     path("@<str:username>", PublicUser.as_view()),
     path("@<str:username>/reviews", PublicUserReviews.as_view()),
 ]

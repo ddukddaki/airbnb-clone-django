@@ -12,6 +12,16 @@ class TinyUserSerializer(ModelSerializer):
         )
 
 
+class UserSignUpSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = (
+            "name",
+            "email",
+            "username",
+        )
+
+
 class PrivateUserSerializer(ModelSerializer):
     class Meta:
         model = User

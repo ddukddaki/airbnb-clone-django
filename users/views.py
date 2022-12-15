@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import ParseError, NotFound
-from .serializers import PrivateUserSerializer, TinyUserSerializer
+from .serializers import PrivateUserSerializer, TinyUserSerializer, UserSignUpSerializer
 from reviews.serializers import ReviewSerializer
 from reviews.models import Review
 from .models import User
@@ -41,17 +41,18 @@ class Me(APIView):
 class Users(APIView):
     def post(self, request):
         password = request.data.get("password")
-        if not password:
-            raise ParseError
-        serializer = PrivateUserSerializer(data=request.data)
+        password_check = request.data.get("password_check")
+        if not password or password != password_check:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        serializer = UserSignUpSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
             user.set_password(password)
             user.save()
-            serializer = PrivateUserSerializer(user)
+            serializer = UserSignUpSerializer(user)
             return Response(serializer.data)
         else:
-            return Response(serializer.errors)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class PublicUser(APIView):
@@ -257,28 +258,3 @@ class NaverLogIn(APIView):
                 return Response(status=status.HTTP_200_OK)
         except Exception:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-
-
-class SignUp(APIView):
-    def post(self, request):
-        name = request.data.get("name")
-        email = request.data.get("email")
-        username = request.data.get("username")
-        password = request.data.get("password")
-        password_check = request.data.get("password_check")
-        if User.objects.filter(email=email).exists():
-            return Response(status=status.HTTP_409_CONFLICT)
-        if password != password_check:
-            print("=============pass1==============")
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-        if not username or not password:
-            print("=============pass2==============")
-            return Response(status=status.HTTP_400_BAD_REQUEST)
-        user = User.objects.create(
-            email=email,
-            name=name,
-            username=username,
-        )
-        user.set_password(password)
-        user.save()
-        return Response(status=status.HTTP_200_OK)

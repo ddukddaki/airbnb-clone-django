@@ -12,10 +12,12 @@ from .views import (
     GithubLogIn,
     KakaoLogIn,
     NaverLogIn,
+    SignUp,
 )
 
 urlpatterns = [
     path("", Users.as_view()),
+    path("sign-up", SignUp.as_view()),
     path("me", Me.as_view()),
     path("change-password", ChangePassword.as_view()),
     path("log-in", LogIn.as_view()),

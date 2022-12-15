@@ -257,3 +257,28 @@ class NaverLogIn(APIView):
                 return Response(status=status.HTTP_200_OK)
         except Exception:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class SignUp(APIView):
+    def post(self, request):
+        name = request.data.get("name")
+        email = request.data.get("email")
+        username = request.data.get("username")
+        password = request.data.get("password")
+        password_check = request.data.get("password_check")
+        if User.objects.filter(email=email).exists():
+            return Response(status=status.HTTP_409_CONFLICT)
+        if password != password_check:
+            print("=============pass1==============")
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        if not username or not password:
+            print("=============pass2==============")
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        user = User.objects.create(
+            email=email,
+            name=name,
+            username=username,
+        )
+        user.set_password(password)
+        user.save()
+        return Response(status=status.HTTP_200_OK)

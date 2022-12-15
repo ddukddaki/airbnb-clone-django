@@ -42,6 +42,9 @@ class Users(APIView):
     def post(self, request):
         password = request.data.get("password")
         password_check = request.data.get("password_check")
+        email = request.data.get("email")
+        if User.objects.filter(email=email).exists():
+            return Response(status=status.HTTP_400_BAD_REQUEST)
         if not password or password != password_check:
             return Response(status=status.HTTP_400_BAD_REQUEST)
         serializer = UserSignUpSerializer(data=request.data)

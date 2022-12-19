@@ -317,3 +317,24 @@ class RoomBookings(APIView):
                 serializer.errors,
                 status=HTTP_400_BAD_REQUEST,
             )
+
+
+class RoomBookingcheck(APIView):
+    def get_object(self, pk):
+        try:
+            return Room.objects.get(pk=pk)
+        except Room.DoesNotExist:
+            raise NotFound
+
+    def get(self, request, pk):
+        room = self.get_object(pk)
+        check_in = request.query_params.get("check_in")
+        check_out = request.query_params.get("check_out")
+        exists = Booking.objects.filter(
+            room=room,
+            check_in__lte=check_out,
+            check_out__gte=check_in,
+        ).exists()
+        if exists:
+            return Response({"ok": False})
+        return Response({"ok": True})

@@ -68,7 +68,7 @@ class RoomDetailSerializer(ModelSerializer):
 
     class Meta:
         model = Room
-        exclude = ("amenities",)
+        fields = "__all__"
 
     def get_rating(self, room):
         return room.rating()

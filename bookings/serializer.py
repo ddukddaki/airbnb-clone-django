@@ -1,6 +1,7 @@
 from django.utils import timezone
 from rest_framework import serializers
 from .models import Booking
+from users.serializers import TinyUserSerializer
 
 
 class CreateRoomBookingSerializer(serializers.ModelSerializer):
@@ -69,3 +70,12 @@ class PublicBookingSerializer(serializers.ModelSerializer):
             "experience_time",
             "guests",
         )
+
+
+class CheckMyBookingSerializer(serializers.ModelSerializer):
+
+    user = TinyUserSerializer()
+
+    class Meta:
+        model = Booking
+        fields = "__all__"

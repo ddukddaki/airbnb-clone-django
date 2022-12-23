@@ -88,3 +88,12 @@ class RoomDetailSerializer(ModelSerializer):
                     rooms__pk=room.pk,
                 ).exists()
         return False
+
+
+class TinyRoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Room
+        fields = (
+            "name",
+            "price",
+        )

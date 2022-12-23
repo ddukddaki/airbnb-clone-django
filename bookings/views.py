@@ -23,17 +23,18 @@ class CancelMyBooking(APIView):
         except Booking.DoesNotExist:
             raise NotFound
 
-    def put(self, request, pk):
+    def post(self, request, pk):
         booking = self.get_object(pk)
+        data = {"not_canceled": False}
         serializer = CheckMyBookingSerializer(
             booking,
-            data=request.data,
+            data=data,
             partial=True,
         )
         if serializer.is_valid():
             canceled_booking = serializer.save()
             serializer = CheckMyBookingSerializer(canceled_booking)
-            return Response(serializer.data)
+            return Response(status=status.HTTP_200_OK)
         else:
             return Response(
                 serializer.errors,

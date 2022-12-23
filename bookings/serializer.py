@@ -75,10 +75,16 @@ class PublicBookingSerializer(serializers.ModelSerializer):
 
 class CheckMyBookingSerializer(serializers.ModelSerializer):
 
-    user = TinyUserSerializer()
-
     room = TinyRoomSerializer()
 
     class Meta:
         model = Booking
-        fields = "__all__"
+        fields = (
+            "id",
+            "room",
+            "kind",
+            "check_in",
+            "check_out",
+            "guests",
+            "not_canceled",
+        )

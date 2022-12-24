@@ -21,6 +21,7 @@ class CustomUserAdmin(UserAdmin):
                     "gender",
                     "language",
                     "currency",
+                    "phone_nb",
                 ),
                 "classes": ("wide",),
             },

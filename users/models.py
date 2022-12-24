@@ -49,3 +49,6 @@ class User(AbstractUser):
         max_length=5,
         choices=CurrencyChoices.choices,
     )
+    phone_nb = models.CharField(
+        max_length=15,
+    )

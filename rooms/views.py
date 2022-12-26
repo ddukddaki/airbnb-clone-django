@@ -338,3 +338,7 @@ class RoomBookingcheck(APIView):
         if exists:
             return Response({"ok": False})
         return Response({"ok": True})
+
+
+def make_error(request):
+    division_by_zero = 1 / 0

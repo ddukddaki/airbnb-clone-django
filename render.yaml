@@ -2,13 +2,13 @@ databases:
   - name: airbnbclone
     databaseName: airbnbclone
     user: airbnbclone
-    region:singapore
+    region: singapore
 
 services:
   - type: web
     name: airbnbclone
     env: python
-    region:singapore
+    region: singapore
     buildCommand: "./build.sh"
     startCommand: "gunicorn mysite.wsgi:application"
     envVars:

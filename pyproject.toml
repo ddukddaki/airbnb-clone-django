@@ -5,7 +5,6 @@ description = ""
 authors = ["Giheon <74302278+Dockerel@users.noreply.github.com>"]
 license = "MIT"
 readme = "README.md"
-packages = [{include = "airbnb_clone_backend"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
@@ -26,5 +25,5 @@ gunicorn = "^20.1.0"
 autopep8 = "^1.7.0"
 
 [build-system]
-requires = ["poetry-core>=1.2.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

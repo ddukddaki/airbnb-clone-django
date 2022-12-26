@@ -117,7 +117,7 @@ if DEBUG:
     }
 else:
     DATABASES = {
-        "default": dj_database_url(
+        "default": dj_database_url.config(
             conn_max_age=600,  # 하나의 연결에 사용될 시간
         )
     }

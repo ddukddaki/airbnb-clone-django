@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.utils import timezone
 from rest_framework.views import APIView
-from django.db import transaction  # 코드조각들을 만들어서 그중 하나라도 실패하면 그 시점에 db에서 변경된 사항들을 모두 되돌려지게 할 수 있음
+from django.db import transaction  # 코드조각들을 만들어서 그중 하나라도 실패하면 그 시점에 db에서 변경된 사항들을 모두 되돌려지게 할 수 있음.
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound, NotAuthenticated, ParseError, PermissionDenied
 from rest_framework.status import HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST

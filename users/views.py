@@ -189,14 +189,13 @@ class KakaoLogIn(APIView):
     def post(self, request):
         try:
             code = request.data.get("code")
-            print(code)
             access_token = requests.post(
                 "https://kauth.kakao.com/oauth/token",
                 headers={"Content-Type": "application/x-www-form-urlencoded"},
                 data={
                     "grant_type": "authorization_code",
                     "client_id": "838e513b4de83049d01044f314a822d5",
-                    "redirect_uri": "https://backend.dobbybnb.xyz/social/kakao",
+                    "redirect_uri": "https://dobbybnb.xyz/social/kakao",
                     "code": code,
                 },
             )

@@ -202,16 +202,13 @@ else:
 CORS_ALLOW_CREDENTIALS = True
 
 if not DEBUG:
+    SESSION_COOKIE_DOMAIN = ".dobbybnb.xyz"
+    CSRF_COOKIE_DOMAIN = ".dobbybnb.xyz"
     sentry_sdk.init(
         dsn="https://56cf94bf53d544f1a01e1e382f6cd4a4@o4504395421974528.ingest.sentry.io/4504395426365440",
         integrations=[
             DjangoIntegration(),
         ],
-        # Set traces_sample_rate to 1.0 to capture 100%
-        # of transactions for performance monitoring.
-        # We recommend adjusting this value in production.
         traces_sample_rate=1.0,
-        # If you wish to associate users to errors (assuming you are using
-        # django.contrib.auth) you may enable sending PII data.
         send_default_pii=True,
     )

@@ -1,12 +1,12 @@
 databases:
-  - name: airbnbclone-db
+  - name: airbnbclone
     databaseName: airbnbclone
     user: airbnbclone
     region: singapore
 
 services:
   - type: web
-    name: airbnbclone-backend
+    name: airbnbclone
     env: python
     region: singapore
     buildCommand: "./build.sh"
